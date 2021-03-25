@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <main>
+    {% if request.user.is_authenticated %}
+    <div class="container">
+      <!--Section: Products v.3-->
+      <section class="text-center mb-4">
+
+        <p class="text-center font-weight-bold">Write answers to all the 10 questions below and click 'Submit' to complete your test!</p>
+
+        <!--Grid row-->
+        <div class="row wow fadeIn">
+          <form action="{% url 'core:home' %}" method="POST">
+            {% csrf_token %}
+            <label>1. {{ question1 }}</label>
+            <div class="md-form mb-5 sm">
+               {{ form.answer1 }}
+            </div>
+            
+            <label>2. {{ question2 }}</label>
+            <div class="md-form mb-5">
+               {{ form.answer2 }}
+            </div>
+
+            <label>3. {{ question3 }}</label>
+            <div class="md-form mb-5">
+               {{ form.answer3 }}
+            </div>
+
+            <label>4. {{ question4 }}</label>
+            <div class="md-form mb-5">
+               {{ form.answer4 }}
+            </div>
+
+            <label>5. {{ question5 }}</label>
+            <div class="md-form mb-5">
+               {{ form.answer5 }}
+            </div>
+
+            <label>6. {{ question6 }}</label>
+            <div class="md-form mb-5">
+               {{ form.answer6 }}
+            </div>
+
+            <label>7. {{ question7 }}</label>
+            <div class="md-form mb-5">
+               {{ form.answer7 }}
+            </div>
+
+            <label>8. {{ question8 }}</label>
+            <div class="md-form mb-5">
+               {{ form.answer8 }}
+            </div>
+
+            <label>9. {{ question9 }}</label>
+            <div class="md-form mb-5">
+               {{ form.answer9 }}
+            </div>
+
+            <label>10. {{ question10 }}</label>
+            <div class="md-form mb-5">
+               {{ form.answer10 }}
+            </div>
+
+          <button type='submit' class="btn btn-primary">Submit</button>
+        </form>
+        </div>
+
+      </section>
+      <!--Section: Products v.3-->
+
+    </div>
+    {% else %}
+    <p class="text-center font-weight-bold">Please login/sign up to start your test!</p>
+    {% endif %}
+
+  </main>
+
+{% endblock content %}
