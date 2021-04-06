@@ -14,7 +14,7 @@ def calc(admin, user):
                 if a == u:
                     t_score += 1
             avg = (t_score / len(i)) #average score
-            if  avg >= 0.05: #if true, the next sentence of admin is checked with the user's next sentence.
+            if  avg >= 0.5: #if true, the next sentence of admin is checked with the user's next sentence.
                 scores.append(avg)
                 break 
             else: #the user's next sentence is compared with the same admin's sentence.

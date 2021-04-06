@@ -3,10 +3,11 @@ from core.forms import GetAnswer
 from django.shortcuts import redirect, render
 from django.views.generic import View
 from core.markcalculation import calc
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from django.contrib import messages
-from math import ceil
+
 # Create your views here.
+
 class AnswerView(View):
     def get(self, *args, **kwargs):
             form  = GetAnswer()
@@ -26,7 +27,9 @@ class AnswerView(View):
             }
             return render(self.request, 'home.html', context)
     def post(self, *args, **kwargs):
+            
             form = GetAnswer(self.request.POST or None)
+            
             if form.is_valid():
                 answer1 = form.cleaned_data.get('answer1')
                 answer2 = form.cleaned_data.get('answer2')
@@ -45,7 +48,7 @@ class AnswerView(View):
                     for question, answer in zip(questions, [answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9, answer10]):
                         Answers.objects.filter(user=self.request.user, question = question.question).update(answer = answer)
                         marks += calc(question.answer, answer)
-                    mark = (marks / 10) * 100
+                    mark = round((marks / 10) * 100, 2)
                     score = score[0]
                     score.score = mark 
                     score.save()
@@ -53,7 +56,8 @@ class AnswerView(View):
                     for question, answer in zip(questions, [answer1, answer2, answer3, answer4, answer5, answer6, answer7, answer8, answer9, answer10]):
                         Answers.objects.create(user=self.request.user, question = question.question, answer = answer)
                         marks += calc(question.answer, answer)
-                    mark = (marks / 10) * 100
+                    mark = round((marks / 10) * 100, 2)
                     Scores.objects.create(user=self.request.user, score=mark)
-                messages.info(self.request, f"Your Final Score is {mark}!")
+                messages.info(self.request, f"Your Final Score is {mark}%!")
+                logout(self.request)
                 return redirect(".")

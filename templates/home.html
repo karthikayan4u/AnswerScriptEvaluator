@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
   <main>
+   
     {% if request.user.is_authenticated %}
     <div class="container">
       <!--Section: Products v.3-->
@@ -71,10 +72,19 @@
       <!--Section: Products v.3-->
 
     </div>
+    <footer class="page-footer text-center font-small mt-4 wow fadeIn">
+
+      <!--Copyright-->
+      <div class="footer-copyright py-3">
+        © 2021 Copyright: Answer Evaluater
+      </div>
+      <!--/.Copyright-->
+   
+    </footer>
     {% else %}
     <p class="text-center font-weight-bold">Please login/sign up to start your test!</p>
     {% endif %}
 
   </main>
-
+  
 {% endblock content %}
