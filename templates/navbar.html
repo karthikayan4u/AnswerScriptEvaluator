@@ -28,6 +28,13 @@
               <span class="clearfix d-sm-inline-block"> Welcome {{user.username}}! </span>
             </a>
           </li>
+          {% if score %}
+          <li class="nav-item">
+            <a class="nav-link waves-effect">
+              <span class="clearfix d-sm-inline-block"> Your last score is {{score}}. </span>
+            </a>
+          </li>
+          {% endif %}
           <li class="nav-item">
             <a class="nav-link waves-effect" href="{% url 'account_logout' %}">
               <span class="clearfix d-sm-inline-block"> Logout </span>

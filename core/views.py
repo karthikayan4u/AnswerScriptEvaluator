@@ -11,9 +11,16 @@ from django.contrib import messages
 class AnswerView(View):
     def get(self, *args, **kwargs):
             questions = Questions.objects.all()
+            score = None
+            if self.request.user.is_authenticated:
+                score = Scores.objects.filter(user=self.request.user)
+                if score.exists():
+                    score = score[0].score
+                
             context = {
                 'questions':questions,
-                'l': len(questions)
+                'l': len(questions),
+                'score':score,
             }
             return render(self.request, 'home.html', context)
     def post(self, *args, **kwargs):
