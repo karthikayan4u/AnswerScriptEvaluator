@@ -15,12 +15,28 @@
   <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
   <style type="text/css">
     html,
-    body,
     header,
+    body {
+    background-image: url("{% static 'img/home-cover.jpg' %}");
+    height: 100%;
+    background-position: center;
+    background-repeat: repeat;
+    background-size: cover;
+    }
     .carousel {
       height: 60vh;
     }
 
+    .textarea {
+            float: left;
+            width: 100%;
+            min-height: 75px;
+            outline: none;
+            resize: none;
+            border: 1px solid grey;
+        }
+    a { color: #ffe600; } /* CSS link color */
+  
     @media (max-width: 740px) {
 
       html,
@@ -47,7 +63,7 @@
 {% include "navbar.html" %}
 
 <body>
-
+  
     <div class="mt-5 pt-4">
     {% if messages %}
         {% for message in messages %}
@@ -67,7 +83,7 @@
     {% block extra_body %}
     {% endblock %}
 
-    {% include "footer.html" %}
+    {% comment %}{% include "footer.html" %}{% endcomment %}
     {% include "scripts.html" %}
 </body>
 </html>
