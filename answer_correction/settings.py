@@ -126,9 +126,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_in_env')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-LOGIN_REDIRECT_URL = '.' #when u login, you go to home page
+LOGIN_REDIRECT_URL = './' #when u login, you go to home page
 # Auth
 
 AUTHENTICATION_BACKENDS = (
