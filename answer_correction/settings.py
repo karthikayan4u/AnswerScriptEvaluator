@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'rws#(58)p&!qwxqcrw@7r@3-u3rd$-#fn#10zd*763@apkz9v6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1',"answer-eval.herokuapp.com"]
 
@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'answer_correction.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE':'django.db.backends.postgresql_psycopg2',
         'NAME':'answerdb',
         'USER': 'postgres',
         'PASSWORD':'password',
