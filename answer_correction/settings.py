@@ -131,13 +131,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_in_env')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 #COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
@@ -164,5 +165,5 @@ AUTHENTICATION_BACKENDS = (
 SITE_ID = 1
 
 # Activate Django-Heroku.
-#django_heroku.settings(locals())
+django_heroku.settings(locals())
 
