@@ -10,10 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
-from pathlib import Path
 import dj_database_url
 import os
-import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'rws#(58)p&!qwxqcrw@7r@3-u3rd$-#fn#10zd*763@apkz9v6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1',"answer-eval.herokuapp.com"]
 
@@ -138,12 +136,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_in_env')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-#COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
-DEBUG_PROPAGATE_EXCEPTIONS = True
-#STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 LOGIN_REDIRECT_URL = '/' #when u login, you go to home page
 # Auth
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -164,6 +159,4 @@ AUTHENTICATION_BACKENDS = (
 )
 SITE_ID = 1
 
-# Activate Django-Heroku.
-#django_heroku.settings(locals())
 
