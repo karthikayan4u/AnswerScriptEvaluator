@@ -34,7 +34,7 @@ ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1',"answer-eval.herokuapp.com"
 # Application definition
 
 INSTALLED_APPS = [
-    #'whitenoise.runserver_nostatic',
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -131,7 +131,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-#STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
