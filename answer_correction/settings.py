@@ -149,6 +149,11 @@ EMAIL_HOST_USER = 'sanjive125@gmail.com'
 EMAIL_HOST_PASSWORD = 'sanjive@1207'
 EMAIL_PORT = 587
 
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_USERNAME_REQUIRED = True
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
