@@ -34,7 +34,7 @@ ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1',"answer-eval.herokuapp.com"
 # Application definition
 
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',
+    #'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
