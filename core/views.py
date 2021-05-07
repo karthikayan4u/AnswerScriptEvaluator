@@ -43,16 +43,16 @@ class AnswerView(View):
                     answer = self.request.POST.get("q"+str(p + 1))
                     Answers.objects.create(user=self.request.user, question = question.question, answer = answer)
                     marks += calc(question.answer, answer)
-                mark = round((marks / len(questions)) * 100, 2)
+                mark = round((marks / len(questions)) * 100)
                 Scores.objects.create(user=self.request.user, score=mark)
-            messages.info(self.request, f"Your Final Score has been to your registered email")
+            messages.info(self.request, f"Your Final Score has been sent to your registered email")
 
             send_mail(
                 "Your Final Score in Answer Evaluator",
-                f"""You have scored {mark} out of 100 in your exam conducted in Answer Evaluator platform. You are free to reattempt the exam to upgrade your mark!
+                f"""You have scored {mark} out of 100 in your exam conducted in Answer Evaluator platform. You are free to reattempt the exam by logging in again to upgrade your mark!
 
-                With regards
-                Answer Evaluator Team""",
+With regards
+Answer Evaluator Team""",
                 "sanjive125@gmail.com",
                 [self.request.user.email],
                 fail_silently=False,
