@@ -5,6 +5,8 @@ from django.views.generic import View
 from core.markcalculation import calc
 from django.contrib.auth import logout
 from django.contrib import messages
+from django.core.mail import send_mail
+
 
 # Create your views here.
 
@@ -43,6 +45,17 @@ class AnswerView(View):
                     marks += calc(question.answer, answer)
                 mark = round((marks / len(questions)) * 100, 2)
                 Scores.objects.create(user=self.request.user, score=mark)
-            messages.info(self.request, f"Your Final Score is {mark}%!")
+            messages.info(self.request, f"Your Final Score has been to your registered email")
+
+            send_mail(
+                "Your Final Score in Answer Evaluator",
+                f"""You have scored {mark} out of 100 in your exam conducted in Answer Evaluator platform. You are free to reattempt the exam to upgrade your mark!
+
+                With regards
+                Answer Evaluator Team""",
+                "sanjive125@gmail.com",
+                [self.request.user.email],
+                fail_silently=False,
+            )
             logout(self.request)
             return redirect(".")

@@ -25,4 +25,4 @@ urlpatterns = [
 
 admin.site.site_header = "Answer Evaluator Administration"
 admin.site.site_title = "Answer Evaluator Portal"
-admin.site.index_title = "Answer Evaluator Administration Portal"
+admin.site.index_title = "Welcome to Answer Evaluator Administration Portal"
