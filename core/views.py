@@ -34,7 +34,7 @@ class AnswerView(View):
                     answer = self.request.POST.get("q"+str(p + 1))
                     Answers.objects.filter(user=self.request.user, question = question.question).update(answer = answer)
                     marks += calc(question.answer, answer)
-                mark = round((marks / len(questions)) * 100, 2)
+                mark = int(round((marks / len(questions)) * 100))
                 score = score[0]
                 score.score = mark 
                 score.save()
