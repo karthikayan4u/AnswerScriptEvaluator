@@ -43,7 +43,7 @@ class AnswerView(View):
                     answer = self.request.POST.get("q"+str(p + 1))
                     Answers.objects.create(user=self.request.user, question = question.question, answer = answer)
                     marks += calc(question.answer, answer)
-                mark = round((marks / len(questions)) * 100)
+                mark = int(round((marks / len(questions)) * 100))
                 Scores.objects.create(user=self.request.user, score=mark)
             messages.info(self.request, f"Your Final Score has been sent to your registered email")
 

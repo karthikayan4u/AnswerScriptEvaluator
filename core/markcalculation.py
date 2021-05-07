@@ -11,7 +11,6 @@ def calc(admin_answer, user_answer):
         for j in i:
             if j not in stop_words:
                 fad.add(j)
-    print(fad)
     for i in f_user_answer:
         for j in i:
             if j not in stop_words:
