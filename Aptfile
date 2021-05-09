@@ -7,3 +7,4 @@ libxext6
 ffmpeg
 libfontconfig1
 libgl1-mesa-glx
+tesseract-ocr
