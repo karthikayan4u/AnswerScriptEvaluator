@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+  <main>
+   
+    {% if request.user.is_authenticated %}
+    <div class="container">
+      <!--Section: Products v.3-->
+      <section class="text-center mb-4">
+
+        <h4><p class="text-center font-weight-bold">Write answers to all the {{l}} questions below in a A4 sheet and Scan it clearly!
+            Finally upload the scanned answer sheets in pdf format and click 'Submit' to complete your test!</p></h4>
+
+        <!--Grid row-->
+        <div class="row wow fadeIn">
+          <form action="{% url 'core:offline' %}" method="POST" class="post-form" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% for question in questions %}
+            
+            <h6><label class="text-center font-weight-bold">{{forloop.counter}}. {{ question.question }}</label></h6>
+            
+            
+            {% endfor %}
+            {{ form.as_p }}  
+            
+
+          <button type='submit' class="btn btn-primary">Submit</button>
+        </form>
+        </div>
+
+      </section>
+    
+    
+    {% else %}
+    <p class="text-center font-weight-bold">Please login/sign up to start your test!</p>
+    {% endif %}
+
+  </main>
+  
+{% endblock content %}

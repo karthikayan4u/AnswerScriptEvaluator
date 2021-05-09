@@ -7,25 +7,12 @@
       <!--Section: Products v.3-->
       <section class="text-center mb-4">
 
-        <h4><p class="text-center font-weight-bold">Write answers to all the {{l}} questions below and click 'Submit' to complete your test!</p></h4>
-
-        <!--Grid row-->
-        <div class="row wow fadeIn">
-          <form action="{% url 'core:home' %}" method="POST">
-            {% csrf_token %}
-
-            {% for question in questions %}
-            
-            <h6><label class="text-center font-weight-bold">{{forloop.counter}}. {{ question.question }}</label></h6>
-            <div class="md-form mb-5">
-               <textarea class="textarea" rows="5" cols="125" maxlength="1000" name="q{{ forloop.counter }}" placeholder="Enter your answer here..."></textarea>
-            </div>
-            
-            {% endfor %}
-
-          <button type='submit' class="btn btn-primary">Submit</button>
-        </form>
-        </div>
+        <button type="button">
+          <a href="{% url 'core:online' %}">Write Online</a>
+        </button>
+        <button type="button">
+          <a href="{% url 'core:offline' %}">Write Offline and Upload</a>
+        </button>
 
       </section>
     
