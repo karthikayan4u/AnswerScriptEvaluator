@@ -1,5 +1,5 @@
 import os
-import PIL
+import cv2
 from pdf2image import convert_from_path
 import pytesseract
 from nltk.corpus import stopwords
@@ -65,14 +65,10 @@ def handle_uploaded_file(pdf):
         page.save(image_name, "JPEG")
         
         # load the original image
-        img = PIL.Image(image_name)
+        img = cv2.imread(image_name)
 
         # convert the image to black and white for better OCR
-        thresh = 200
-        fn = lambda x : 255 if x > thresh else 0
-        thresh1 = img.convert('L').point(fn, mode='1')
-        
-        #_,thresh1 = cv2.threshold(img,120,255,cv2.THRESH_BINARY)
+        _,thresh1 = cv2.threshold(img,120,255,cv2.THRESH_BINARY)
 
         # pytesseract image to string to get results
         text = str(pytesseract.image_to_string(thresh1, config='--psm 6'))
