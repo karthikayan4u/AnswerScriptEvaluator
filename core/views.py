@@ -1,3 +1,9 @@
+import os
+from django.core.mail.message import EmailMultiAlternatives
+from django.http import response
+from django.http.response import HttpResponse
+from django.template.loader import get_template
+from core.utils import render_to_pdf
 from core.models import Answers, Questions, Scores
 from core.forms import GetAnswer
 from django.shortcuts import redirect, render
@@ -5,7 +11,8 @@ from django.views.generic import View
 from core.markcalculation import calc, handle_uploaded_file
 from django.contrib.auth import logout
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
+import pdfkit
 
 
 # Create your views here.
@@ -67,7 +74,8 @@ class OfflineAnswerView(View):
 
             send_mail(
                 "Your Final Score in Answer Evaluator",
-                f"""After evaluating your answer script that you uploaded in Answer Evaluator platform, we announce that you have scored {mark} out of 100 in your exam. You are free to reattempt the exam by logging in again to upgrade your mark!
+                f"""Greetings {self.request.user.username}!!
+After evaluating your answer script that you uploaded in Answer Evaluator platform, we announce that you have scored {mark} out of 100 in your exam. You are free to reattempt the exam by logging in again to upgrade your mark!
 
 With regards
 Answer Evaluator Team""",
@@ -119,7 +127,8 @@ class OnlineAnswerView(View):
 
             send_mail(
                 "Your Final Score in Answer Evaluator",
-                f"""After evaluating your answers that you wrote in Answer Evaluator platform, we announce that you have scored {mark} out of 100 in your exam conducted in Answer Evaluator platform. You are free to reattempt the exam by logging in again to upgrade your mark!
+                f"""Greetings {self.request.user.username}!!
+After evaluating your answers that you wrote in Answer Evaluator platform, we announce that you have scored {mark} out of 100 in your exam conducted in Answer Evaluator platform. You are free to reattempt the exam by logging in again to upgrade your mark!
 
 With regards
 Answer Evaluator Team""",
@@ -129,3 +138,34 @@ Answer Evaluator Team""",
             )
             logout(self.request)
             return redirect("core:home")
+
+#Creating our view, it is a class based view
+class GeneratePdf(View):
+     def get(self, request, *args, **kwargs):
+        response = Answers.objects.filter(user=self.request.user)
+        score = Scores.objects.filter(user=self.request.user)
+        #getting the template
+        pdf = render_to_pdf('recordedresponse.html', {'responses':response, 'user':self.request.user, 'score':score[0].score})
+        """email = EmailMessage(
+                "Your Most Recently Recorded Answer Script",
+                f\"""Greetings {self.request.user.username}!!
+Your most recently recorded answer script is attached in this email. You are free to reattempt the exam by logging in again to upgrade your mark!
+
+With regards
+Answer Evaluator Team\""",
+                "sanjive125@gmail.com",
+                [self.request.user.email],
+            )
+        template = get_template('../templates/recordedresponse.html')
+        html = template.render({'responses':response, 'user':self.request.user, 'score':score[0].score})
+        options = {
+        'page-size': 'Letter',
+        'encoding': "UTF-16",
+        }
+        #pdfkit.from_url('https://answer-eval.herokuapp.com/pdf/', 'out.pdf')
+        pdfkit.from_string(html, 'out.pdf', options)
+        email.attach(f"{self.request.user.username}_AnswerScript.pdf", "out.pdf")
+        email.send(fail_silently=False) 
+        os.remove("out.pdf")"""
+         #rendering the template
+        return HttpResponse(pdf, content_type='application/pdf')

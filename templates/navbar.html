@@ -28,10 +28,15 @@
               <span class="clearfix d-sm-inline-block"> Welcome {{user.username}}! </span>
             </a>
           </li>
-          {% if score %}
+          {% if score != None %}
           <li class="nav-item">
             <a class="nav-link waves-effect">
               <span class="clearfix d-sm-inline-block"> Your last score is {{score}}. </span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'core:pdf' %}">
+              <span class="clearfix d-sm-inline-block"> Download Answer Script </span>
             </a>
           </li>
           {% endif %}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AnswerScript.pdf</title>
+</head>
+<body>
+    <h1>Most Recently Recorded Answer Script of {{ user.username }}</h1>
+    
+     <b>{% for response in responses %}
+        
+        <h4><label class="text-center font-weight-bold">{{forloop.counter}}. {{ response.question }}</label></h4>
+        <p>{{ response.answer }}</p>
+        
+        {% endfor %}
+
+        <h1>Mark that you had scored in your recent attempt is {{score}}!!</h1>
+</b>
+</body>
+</html>
