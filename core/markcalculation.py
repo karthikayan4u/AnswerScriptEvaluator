@@ -67,7 +67,7 @@ def handle_uploaded_file(pdf, questions):
         # pytesseract image to string to get results
         text = str(pytesseract.image_to_string(thresh1, config='--psm 6'))
         for question in questions:
-            if question.question in text:
+            if question.question.lower() in text.lower():
                 cur_question = question.question
                 questions.remove(question)
                 break
