@@ -1,8 +1,5 @@
-import os
-from django.core.mail.message import EmailMultiAlternatives
-from django.http import response
+from answer_correction.settings import EMAIL_HOST_USER
 from django.http.response import HttpResponse
-from django.template.loader import get_template
 from core.utils import render_to_pdf
 from core.models import Answers, Questions, Scores
 from core.forms import GetAnswer
@@ -11,19 +8,37 @@ from django.views.generic import View
 from core.markcalculation import calc, handle_uploaded_file
 from django.contrib.auth import logout
 from django.contrib import messages
-from django.core.mail import send_mail, EmailMessage
-import pdfkit
+from django.core.mail import send_mail
 
 
-# Create your views here.
+def send_email(request, mark):
+    messages.info(request, f"Your Final Score has been sent to your registered email!!")
+    send_mail(
+        "Your Final Score in Answer Evaluator",
+        f"""Greetings {request.user.username}!!
+After evaluating your answer script, we announce that you have scored {mark} out of 100 in your exam. You are free to reattempt the exam by logging in again to upgrade your mark!
+You can also download your recorded answers by logging in again!
+With regards
+Answer Evaluator Team""",
+        EMAIL_HOST_USER,
+        [request.user.email],
+        fail_silently=False,
+    )
+    logout(request)
+
+
+def get_score(request):
+    score = None
+    if request.user.is_authenticated:
+        recorded_score = Scores.objects.filter(user=request.user)
+        if recorded_score.exists():
+            score = recorded_score[0].score
+    return score
+
+
 class HomeView(View):
     def get(self, *args, **kwargs):
-            score = None
-            if self.request.user.is_authenticated:
-                score = Scores.objects.filter(user=self.request.user)
-                if score.exists():
-                    score = score[0].score
-                
+            score = get_score(self.request)
             context = {
                 'score':score,
             }
@@ -32,12 +47,8 @@ class HomeView(View):
 class OfflineAnswerView(View):
     def get(self, *args, **kwargs):
             questions = Questions.objects.all()
-            score = None
+            score = score = get_score(self.request)
             form = GetAnswer()
-            if self.request.user.is_authenticated:
-                score = Scores.objects.filter(user=self.request.user)
-                if score.exists():
-                    score = score[0].score
                 
             context = {
                 'questions':questions,
@@ -55,7 +66,7 @@ class OfflineAnswerView(View):
             score = Scores.objects.filter(user=self.request.user)
             if score.exists():
                 for question in questions:
-                    answer = answers[question.question]
+                    answer = answers.get(question.question, '')
                     recorded_answers = Answers.objects.filter(user=self.request.user, question = question.question)
                     if recorded_answers:
                         recorded_answers.update(answer = answer)
@@ -68,25 +79,12 @@ class OfflineAnswerView(View):
                 score.save()
             else:
                 for question in questions:
-                    answer = answers[question.question]
+                    answer = answers.get(question.question, '')
                     Answers.objects.create(user=self.request.user, question = question.question, answer = answer)
                     marks += calc(question.answer, answer)
                 mark = int(round((marks / len(questions)) * 100))
                 Scores.objects.create(user=self.request.user, score=mark)
-            messages.info(self.request, f"Your Final Score has been sent to your registered email!!")
-
-            send_mail(
-                "Your Final Score in Answer Evaluator",
-                f"""Greetings {self.request.user.username}!!
-After evaluating your answer script that you uploaded in Answer Evaluator platform, we announce that you have scored {mark} out of 100 in your exam. You are free to reattempt the exam by logging in again to upgrade your mark!
-
-With regards
-Answer Evaluator Team""",
-                "sanjive125@gmail.com",
-                [self.request.user.email],
-                fail_silently=False,
-            )
-            logout(self.request)
+            send_email(self.request, mark)
             return redirect("core:home")
         messages.info(self.request,"Please upload a pdf file!")
         return redirect("core:offline")
@@ -94,11 +92,7 @@ Answer Evaluator Team""",
 class OnlineAnswerView(View):
     def get(self, *args, **kwargs):
             questions = Questions.objects.all()
-            score = None
-            if self.request.user.is_authenticated:
-                score = Scores.objects.filter(user=self.request.user)
-                if score.exists():
-                    score = score[0].score
+            score = score = get_score(self.request)
                 
             context = {
                 'questions':questions,
@@ -130,20 +124,7 @@ class OnlineAnswerView(View):
                     marks += calc(question.answer, answer)
                 mark = int(round((marks / len(questions)) * 100))
                 Scores.objects.create(user=self.request.user, score=mark)
-            messages.info(self.request, f"Your Final Score has been sent to your registered email!!")
-
-            send_mail(
-                "Your Final Score in Answer Evaluator",
-                f"""Greetings {self.request.user.username}!!
-After evaluating your answers that you wrote in Answer Evaluator platform, we announce that you have scored {mark} out of 100 in your exam conducted in Answer Evaluator platform. You are free to reattempt the exam by logging in again to upgrade your mark!
-
-With regards
-Answer Evaluator Team""",
-                "sanjive125@gmail.com",
-                [self.request.user.email],
-                fail_silently=False,
-            )
-            logout(self.request)
+            send_email(self.request, mark)
             return redirect("core:home")
 
 
