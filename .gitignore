@@ -5,3 +5,4 @@ __pycache__/
 local_settings.py
 answer_cor/
 latest.dump
+db.sqlite3
