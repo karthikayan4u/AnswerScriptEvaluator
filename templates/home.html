@@ -7,18 +7,14 @@
       <!--Section: Products v.3-->
       <section class="text-center mb-4">
 
-        <button type="button">
-          <a href="{% url 'core:online' %}">Write Online</a>
-        </button>
-        <button type="button">
-          <a href="{% url 'core:offline' %}">Write Offline and Upload</a>
-        </button>
+          <a class="btn btn-primary btn-lg" tabindex="-1" role="button" aria-disabled="true" href="{% url 'core:online' %}">Write Online</a>
+          <a class="btn btn-primary btn-lg" tabindex="-1" role="button" aria-disabled="true" href="{% url 'core:offline' %}">Write Offline and Upload</a>
 
       </section>
     
     
     {% else %}
-    <p class="text-center font-weight-bold">Please login/sign up to start your test!</p>
+    <p class="text-center font-weight-bold">Please log in/sign up to start your test!</p>
     {% endif %}
 
   </main>

@@ -48,24 +48,27 @@ class OfflineAnswerView(View):
             return render(self.request, 'offline.html', context)
     def post(self, *args, **kwargs):
         student = GetAnswer(self.request.POST, self.request.FILES)  
-        if student.is_valid() and self.request.FILES['file'].name.split('.')[1] == 'pdf': 
-            answers = handle_uploaded_file(self.request.FILES['file'])
-            
+        if student.is_valid() and self.request.FILES['file'].name.split('.')[1] == 'pdf':
             questions = Questions.objects.all()
+            answers = handle_uploaded_file(self.request.FILES['file'], set(questions))
             marks = 0
             score = Scores.objects.filter(user=self.request.user)
             if score.exists():
-                for p, question in enumerate(questions):
-                    answer = answers[p]
-                    Answers.objects.filter(user=self.request.user, question = question.question).update(answer = answer)
+                for question in questions:
+                    answer = answers[question.question]
+                    recorded_answers = Answers.objects.filter(user=self.request.user, question = question.question)
+                    if recorded_answers:
+                        recorded_answers.update(answer = answer)
+                    else:
+                        Answers.objects.create(user=self.request.user, question = question.question, answer = answer)
                     marks += calc(question.answer, answer)
                 mark = int(round((marks / len(questions)) * 100))
                 score = score[0]
                 score.score = mark 
                 score.save()
             else:
-                for p, question in enumerate(questions):
-                    answer = answers[p]
+                for question in questions:
+                    answer = answers[question.question]
                     Answers.objects.create(user=self.request.user, question = question.question, answer = answer)
                     marks += calc(question.answer, answer)
                 mark = int(round((marks / len(questions)) * 100))
@@ -110,7 +113,11 @@ class OnlineAnswerView(View):
             if score.exists():
                 for p, question in enumerate(questions):
                     answer = self.request.POST.get("q"+str(p + 1))
-                    Answers.objects.filter(user=self.request.user, question = question.question).update(answer = answer)
+                    recorded_answers = Answers.objects.filter(user=self.request.user, question = question.question)
+                    if recorded_answers:
+                        recorded_answers.update(answer = answer)
+                    else:
+                        Answers.objects.create(user=self.request.user, question = question.question, answer = answer)
                     marks += calc(question.answer, answer)
                 mark = int(round((marks / len(questions)) * 100))
                 score = score[0]
@@ -139,33 +146,12 @@ Answer Evaluator Team""",
             logout(self.request)
             return redirect("core:home")
 
-#Creating our view, it is a class based view
+
 class GeneratePdf(View):
      def get(self, request, *args, **kwargs):
         response = Answers.objects.filter(user=self.request.user)
         score = Scores.objects.filter(user=self.request.user)
         #getting the template
         pdf = render_to_pdf('recordedresponse.html', {'responses':response, 'user':self.request.user, 'score':score[0].score})
-        """email = EmailMessage(
-                "Your Most Recently Recorded Answer Script",
-                f\"""Greetings {self.request.user.username}!!
-Your most recently recorded answer script is attached in this email. You are free to reattempt the exam by logging in again to upgrade your mark!
-
-With regards
-Answer Evaluator Team\""",
-                "sanjive125@gmail.com",
-                [self.request.user.email],
-            )
-        template = get_template('../templates/recordedresponse.html')
-        html = template.render({'responses':response, 'user':self.request.user, 'score':score[0].score})
-        options = {
-        'page-size': 'Letter',
-        'encoding': "UTF-16",
-        }
-        #pdfkit.from_url('https://answer-eval.herokuapp.com/pdf/', 'out.pdf')
-        pdfkit.from_string(html, 'out.pdf', options)
-        email.attach(f"{self.request.user.username}_AnswerScript.pdf", "out.pdf")
-        email.send(fail_silently=False) 
-        os.remove("out.pdf")"""
-         #rendering the template
+        #rendering the template
         return HttpResponse(pdf, content_type='application/pdf')

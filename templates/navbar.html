@@ -24,31 +24,27 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           {% if request.user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link waves-effect">
-              <span class="clearfix d-sm-inline-block"> Welcome {{user.username}}! </span>
-            </a>
+              <span class="nav-link waves-effect clearfix d-sm-inline-block"> Welcome {{user.username}}! </span>
           </li>
           {% if score != None %}
           <li class="nav-item">
-            <a class="nav-link waves-effect">
-              <span class="clearfix d-sm-inline-block"> Your last score is {{score}}. </span>
-            </a>
+              <span class="nav-link waves-effect clearfix d-sm-inline-block"> Your last score is {{score}} </span>
           </li>
           <li class="nav-item">
-            <a class="nav-link waves-effect" href="{% url 'core:pdf' %}">
+            <a target="_blank" class="nav-link waves-effect" href="{% url 'core:pdf' %}"> <!--_blank makes it open in new tab-->
               <span class="clearfix d-sm-inline-block"> Download Answer Script </span>
             </a>
           </li>
           {% endif %}
           <li class="nav-item">
             <a class="nav-link waves-effect" href="{% url 'account_logout' %}">
-              <span class="clearfix d-sm-inline-block"> Logout </span>
+              <span class="clearfix d-sm-inline-block"> Log Out </span>
             </a>
           </li>
           {% else %}
           <li class="nav-item">
             <a class="nav-link waves-effect" href="{% url 'account_login' %}">
-              <span class="clearfix d-sm-inline-block"> Login </span>
+              <span class="clearfix d-sm-inline-block"> Log In </span>
             </a>
           </li>
           <li class="nav-item">
