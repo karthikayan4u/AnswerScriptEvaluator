@@ -1,7 +1,7 @@
 from answer_correction.settings import EMAIL_HOST_USER
 from django.http.response import HttpResponse
 from core.utils import render_to_pdf
-from core.models import Answers, Questions, Scores
+from core.models import Answer, Question, Score
 from core.forms import GetAnswer
 from django.shortcuts import redirect, render
 from django.views.generic import View
@@ -30,23 +30,30 @@ Answer Evaluator Team""",
 def get_score(request):
     score = None
     if request.user.is_authenticated:
-        recorded_score = Scores.objects.filter(user=request.user)
+        recorded_score = Score.objects.filter(user=request.user)
         if recorded_score.exists():
             score = recorded_score[0].score
     return score
 
-
 class HomeView(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'home.html')
+
+class TeacherView(View):
+    def get(self, *args, **kwargs):
+        return redirect("/teacher")
+
+class StudentView(View):
     def get(self, *args, **kwargs):
             score = get_score(self.request)
             context = {
                 'score':score,
             }
-            return render(self.request, 'home.html', context)
+            return render(self.request, 'student.html', context)
 
 class OfflineAnswerView(View):
     def get(self, *args, **kwargs):
-            questions = Questions.objects.all()
+            questions = Question.objects.all()
             score = score = get_score(self.request)
             form = GetAnswer()
                 
@@ -60,18 +67,18 @@ class OfflineAnswerView(View):
     def post(self, *args, **kwargs):
         student = GetAnswer(self.request.POST, self.request.FILES)  
         if student.is_valid() and self.request.FILES['file'].name.split('.')[1] == 'pdf':
-            questions = Questions.objects.all()
+            questions = Question.objects.all()
             answers = handle_uploaded_file(self.request.FILES['file'], set(questions))
             marks = 0
-            score = Scores.objects.filter(user=self.request.user)
+            score = Score.objects.filter(user=self.request.user)
             if score.exists():
                 for question in questions:
-                    answer = answers.get(question.question, '')
-                    recorded_answers = Answers.objects.filter(user=self.request.user, question = question.question)
+                    answer = answers.get(question.question, ' ')
+                    recorded_answers = Answer.objects.filter(user=self.request.user, question = question.question)
                     if recorded_answers:
                         recorded_answers.update(answer = answer)
                     else:
-                        Answers.objects.create(user=self.request.user, question = question.question, answer = answer)
+                        Answer.objects.create(user=self.request.user, question = question.question, answer = answer)
                     marks += calc(question.answer, answer)
                 mark = int(round((marks / len(questions)) * 100))
                 score = score[0]
@@ -79,19 +86,19 @@ class OfflineAnswerView(View):
                 score.save()
             else:
                 for question in questions:
-                    answer = answers.get(question.question, '')
-                    Answers.objects.create(user=self.request.user, question = question.question, answer = answer)
+                    answer = answers.get(question.question, ' ')
+                    Answer.objects.create(user=self.request.user, question = question.question, answer = answer)
                     marks += calc(question.answer, answer)
                 mark = int(round((marks / len(questions)) * 100))
-                Scores.objects.create(user=self.request.user, score=mark)
+                Score.objects.create(user=self.request.user, score=mark)
             send_email(self.request, mark)
-            return redirect("core:home")
+            return redirect("core:student")
         messages.info(self.request,"Please upload a pdf file!")
         return redirect("core:offline")
 
 class OnlineAnswerView(View):
     def get(self, *args, **kwargs):
-            questions = Questions.objects.all()
+            questions = Question.objects.all()
             score = score = get_score(self.request)
                 
             context = {
@@ -101,17 +108,17 @@ class OnlineAnswerView(View):
             }
             return render(self.request, 'online.html', context)
     def post(self, *args, **kwargs):
-            questions = Questions.objects.all()
+            questions = Question.objects.all()
             marks = 0
-            score = Scores.objects.filter(user=self.request.user)
+            score = Score.objects.filter(user=self.request.user)
             if score.exists():
                 for p, question in enumerate(questions):
                     answer = self.request.POST.get("q"+str(p + 1))
-                    recorded_answers = Answers.objects.filter(user=self.request.user, question = question.question)
+                    recorded_answers = Answer.objects.filter(user=self.request.user, question = question.question)
                     if recorded_answers:
                         recorded_answers.update(answer = answer)
                     else:
-                        Answers.objects.create(user=self.request.user, question = question.question, answer = answer)
+                        Answer.objects.create(user=self.request.user, question = question.question, answer = answer)
                     marks += calc(question.answer, answer)
                 mark = int(round((marks / len(questions)) * 100))
                 score = score[0]
@@ -120,18 +127,18 @@ class OnlineAnswerView(View):
             else:
                 for p, question in enumerate(questions):
                     answer = self.request.POST.get("q"+str(p + 1))
-                    Answers.objects.create(user=self.request.user, question = question.question, answer = answer)
+                    Answer.objects.create(user=self.request.user, question = question.question, answer = answer)
                     marks += calc(question.answer, answer)
                 mark = int(round((marks / len(questions)) * 100))
-                Scores.objects.create(user=self.request.user, score=mark)
+                Score.objects.create(user=self.request.user, score=mark)
             send_email(self.request, mark)
-            return redirect("core:home")
+            return redirect("core:student")
 
 
 class GeneratePdf(View):
      def get(self, request, *args, **kwargs):
-        response = Answers.objects.filter(user=self.request.user)
-        score = Scores.objects.filter(user=self.request.user)
+        response = Answer.objects.filter(user=self.request.user)
+        score = Score.objects.filter(user=self.request.user)
         #getting the template
         pdf = render_to_pdf('recordedresponse.html', {'responses':response, 'user':self.request.user, 'score':score[0].score})
         #rendering the template

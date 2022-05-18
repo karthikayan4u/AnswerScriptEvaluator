@@ -143,7 +143,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-LOGIN_REDIRECT_URL = '/' #when u login, you go to home page
+LOGIN_REDIRECT_URL = '/student' #when u login, you go to home page
 # Auth
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True

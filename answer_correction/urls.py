@@ -18,9 +18,9 @@ from django.urls import path
 from django.urls.conf import include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
     path('', include('core.urls', namespace='core')),
+    path('teacher/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
 ]
 
 admin.site.site_header = "Answer Evaluator Administration"

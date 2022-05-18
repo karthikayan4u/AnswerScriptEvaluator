@@ -65,14 +65,17 @@ def handle_uploaded_file(pdf, questions):
         _,thresh1 = cv2.threshold(img,120,255,cv2.THRESH_BINARY)
 
         # pytesseract image to string to get results
-        text = str(pytesseract.image_to_string(thresh1, config='--psm 6'))
+        text = str(pytesseract.image_to_string(thresh1, config='--psm 6')).lower()
+        print(text)
         for question in questions:
             if question.question.lower() in text.lower():
-                cur_question = question.question
+                cur_question = question.question.strip()
                 questions.remove(question)
                 break
-        processed_txt = text.replace(cur_question, '').strip()
-        answers[cur_question] = answers.get(cur_question, '') + processed_txt
+        if(cur_question):
+            processed_txt = text.replace(cur_question.lower(), '').strip()
+            answers[cur_question] = answers.get(cur_question, '') + processed_txt
+            print(f"Answer = {answers[cur_question]},\nquestion = {cur_question},\ntext = {processed_txt}\n", end="\n\n")
         os.remove("Page_" + str(i) + ".jpeg")
     os.remove(pdf.name)
     return answers

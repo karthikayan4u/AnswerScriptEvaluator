@@ -1,4 +1,4 @@
-from core.models import Answers, Questions, Scores
+from core.models import Answer, Question, Score
 from django.contrib import admin
 
 class UserAdmin(admin.ModelAdmin):
@@ -6,6 +6,7 @@ class UserAdmin(admin.ModelAdmin):
         'user__username']
 
 # Register your models here.
-admin.site.register(Questions)
-admin.site.register(Answers, UserAdmin)
-admin.site.register(Scores, UserAdmin)
+admin.site.register(Question)
+admin.site.register(Answer, UserAdmin)
+admin.site.register(Score, UserAdmin)
+admin.site.site_url = "http://127.0.0.1:8000/"
